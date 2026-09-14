@@ -29,10 +29,10 @@ Requires **Omarchy 4 with Lua Hyprland and Quickshell**, tested on 4.0.2-1. The 
 
 - **Canopy bar:** three small floating capsules, sliding workspace rail, clock and native monitor control. Disconnected Bluetooth collapses until you hover over the bar; icons retain their native descriptive tooltips.
 - **Grove Controls:** sound, brightness, Wi-Fi, Bluetooth and night light in one compact panel. Native connection and display panels remain a click away.
-- **Graphical screensaver:** crisp time and date in the artwork's open left side, a subtle emerald light cycle, and a short dismissal fade. Keyboard, click, scroll or mouse movement dismisses it.
+- **Graphical screensaver:** crisp time and date in the artwork's open left side, a slow cinematic drift and emerald light cycle, and a short dismissal fade. Keyboard, click, scroll or mouse movement dismisses it.
 - **Matching lock screen:** the same artwork and clock placement, plus a minimal password field. Native PAM, fingerprint authentication, session locking and recovery stay in Omarchy's service.
 - **Motion:** coordinated window, workspace and layer transitions; shorter departures; interruptible popup fades. Quick, Balanced, Soft and Off presets.
-- **Appearance:** bar height from 24–40 px and opacity from 75–100%. Default: 30 px and 94%.
+- **Appearance:** bar height from 24–40 px and opacity from 75–100%. Default: 24 px and 94%.
 
 ## Everyday use
 

@@ -5,7 +5,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "bone-grove.brand"
-  implicitWidth: root.vertical ? root.barSize : 92
+  implicitWidth: root.vertical ? root.barSize : 80
   implicitHeight: root.barSize
   WidgetButton {
     id: button
@@ -22,10 +22,10 @@ BarWidget {
     }
     Canvas {
       id: leaf
-      width: 23; height: 24
+      width: 19; height: 20
       anchors.left: parent.left; anchors.leftMargin: 5
       anchors.verticalCenter: parent.verticalCenter
-      rotation: button.tooltipHovered ? -5 : 0
+      rotation: button.tooltipHovered ? -12 : 0
       Behavior on rotation { NumberAnimation { duration: root.bar && root.bar.reducedMotion ? 0 : 280; easing.type: Easing.OutCubic } }
       property color ink: Color.accent
       onInkChanged: requestPaint()
@@ -38,10 +38,10 @@ BarWidget {
     }
     Text {
       visible: !root.vertical
-      anchors.left: leaf.right; anchors.leftMargin: 7
+      anchors.left: leaf.right; anchors.leftMargin: 5
       anchors.verticalCenter: parent.verticalCenter
       text: "GROVE"; color: Color.foreground
-      font.family: "Adwaita Sans"; font.pixelSize: 10; font.weight: Font.DemiBold; font.letterSpacing: 1.6
+      font.family: "Adwaita Sans"; font.pixelSize: 10; font.weight: Font.DemiBold; font.letterSpacing: 1.0
     }
   }
 }

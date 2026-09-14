@@ -1034,8 +1034,8 @@ Item {
       right: root.position === "right" || !root.vertical
     }
 
-    implicitWidth: root.vertical ? root.barSize + 12 : 0
-    implicitHeight: root.vertical ? 0 : root.barSize + 12
+    implicitWidth: root.vertical ? root.barSize + 8 : 0
+    implicitHeight: root.vertical ? 0 : root.barSize + 8
     color: "transparent"
     surfaceFormat.opaque: false
     WlrLayershell.namespace: "omarchy-bar"
@@ -1043,7 +1043,7 @@ Item {
 
     Loader {
       anchors.fill: parent
-      anchors.margins: 6
+      anchors.margins: 4
       sourceComponent: root.vertical ? verticalBar : horizontalBar
 
       // A child of the loader, not a sibling of the sections: an ancestor stays
@@ -1512,9 +1512,9 @@ Item {
       z: -1
       visible: moduleListRoot.width > 0
       anchors.fill: parent
-      anchors.leftMargin: root.vertical ? 0 : -10
-      anchors.rightMargin: root.vertical ? 0 : -10
-      radius: 15
+      anchors.leftMargin: root.vertical ? 0 : -7
+      anchors.rightMargin: root.vertical ? 0 : -7
+      radius: height / 2
       color: root.background
       border.width: 1
       border.color: capsuleHover.hovered ? Qt.alpha(Color.accent, 0.52) : Qt.alpha(Color.accent, 0.18)
@@ -1523,7 +1523,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 1
-        width: capsuleHover.hovered ? parent.width * 0.60 : parent.width * 0.18
+        width: capsuleHover.hovered ? parent.width * 0.80 : parent.width * 0.18
         height: 1
         radius: 1
         color: Color.accent
@@ -1628,7 +1628,7 @@ Item {
     }
 
     HoverHandler { id: moduleHover }
-    scale: root.reducedMotion ? 1 : (slot.hovered ? 1.015 : 1)
+    scale: root.reducedMotion ? 1 : (slot.hovered ? 1.055 : 1)
     Behavior on scale { NumberAnimation { duration: root.reducedMotion ? 0 : 180; easing.type: Easing.OutCubic } }
     Rectangle {
       z: -1
