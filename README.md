@@ -56,6 +56,10 @@ bone-grove-motion reduced
 bone-grove-motion full
 ```
 
+![The native Grove screensaver](assets/screensaver.png)
+
+The full installer makes Grove the native screensaver: automatic idle activation, `omarchy launch screensaver`, and the direct screensaver command use our renderer. A small user-local CLI shim handles only those screensaver routes and delegates every other command to `/usr/bin/omarchy`. A backed-up Hyprland appearance include gives user-local commands priority when the compositor starts applications. Packaged Omarchy files are untouched.
+
 The screensaver respects your existing idle policy; the session lock remains managed by Omarchy. This is an ambient screensaver, not a replacement lock screen.
 
 ### Restore your previous setup

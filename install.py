@@ -39,7 +39,7 @@ def main():
             subprocess.run(['omarchy','restart','shell'],check=True)
         print('Restored', args.restore); return
     if not args.full: ap.error('Use --full after reviewing README.md, or --restore BACKUP.')
-    plan = ['.config/omarchy/themes/bone-grove', '.config/omarchy/shell.json']
+    plan = ['.config/omarchy/themes/bone-grove', '.config/omarchy/shell.json', '.config/hypr/looknfeel.lua', '.config/hypr/bone-grove-session.lua']
     plan += ['.config/omarchy/plugins/'+p.name for p in sorted((ROOT/'experience/plugins').iterdir()) if p.is_dir()]
     plan += ['.local/bin/'+p.name for p in sorted((ROOT/'experience/bin').iterdir()) if p.is_file()]
     plan += ['.local/share/applications/bone-grove-screensaver.desktop']
@@ -52,6 +52,8 @@ def main():
     shell_path = home/'.config/omarchy/shell.json'
     # Parse before changing anything. Preserve idle policy and unrelated settings.
     shell = json.loads(shell_path.read_text()) if shell_path.exists() else {'version':1}
+    look_path=home/'.config/hypr/looknfeel.lua'
+    look=look_path.read_text() if look_path.exists() else ''
     previous_path=home/'.local/state/omarchy/current/theme.name'
     previous_theme=previous_path.read_text().strip() if previous_path.exists() else ''
     backup=home/'.config/omarchy/backups'/('bone-grove-'+datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f'))
@@ -60,6 +62,11 @@ def main():
     # Stage before writes, including when run from the installed theme repository.
     with tempfile.TemporaryDirectory(prefix='bone-grove-') as temp:
         staging=Path(temp)
+        hypr=staging/'.config/hypr';hypr.mkdir(parents=True)
+        copy(ROOT/'experience/hypr/bone-grove-session.lua',hypr/'bone-grove-session.lua')
+        routing='require("hypr.bone-grove-session")'
+        if routing not in look: look+='\n-- Bone Grove native screensaver routing.\n'+routing+'\n'
+        (hypr/'looknfeel.lua').write_text(look)
         theme=staging/'.config/omarchy/themes/bone-grove';theme.mkdir(parents=True)
         for name in ('colors.toml','shell.toml','icons.theme','backgrounds'): copy(ROOT/name,theme/name)
         for src in (ROOT/'experience/theme').iterdir(): copy(src,theme/src.name)

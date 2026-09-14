@@ -1,0 +1,10 @@
+#!/bin/bash
+# Bone Grove handles only screensaver entry points; all other CLI routes stay native.
+if [[ $# == 1 && $1 == screensaver ]]; then
+  exec "$HOME/.local/bin/omarchy-screensaver"
+elif [[ $# == 2 && $1 == launch && $2 == screensaver ]]; then
+  exec "$HOME/.local/bin/omarchy-launch-screensaver"
+elif [[ $# == 3 && $1 == launch && $2 == screensaver && $3 == force ]]; then
+  exec "$HOME/.local/bin/omarchy-launch-screensaver" force
+fi
+exec /usr/bin/omarchy "$@"
