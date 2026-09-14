@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "bone-grove.brand",
+  "name": "Bone Grove \u00b7 Grove Mark",
+  "version": "1.1.0",
+  "author": "Jonah Chang",
+  "description": "Grove menu, screensaver and motion controls",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Grove",
+    "description": "Menu, screensaver and motion controls",
+    "category": "System",
+    "allowMultiple": false
+  }
+}

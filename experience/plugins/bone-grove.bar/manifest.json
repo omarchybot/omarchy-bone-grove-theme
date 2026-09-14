@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "bone-grove.bar",
+  "name": "Bone Grove \u00b7 Canopy Bar",
+  "version": "1.1.0",
+  "author": "Jonah Chang; based on Omarchy",
+  "description": "Status bar with widgets",
+  "kinds": [
+    "bar"
+  ],
+  "entryPoints": {
+    "bar": "Bar.qml"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.bar"
+  }
+}

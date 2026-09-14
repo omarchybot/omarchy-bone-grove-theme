@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "bone-grove.workspaces",
+  "name": "Bone Grove \u00b7 Workspace Rail",
+  "version": "1.1.0",
+  "author": "Jonah Chang; based on Omarchy",
+  "description": "Workspace number indicators",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Workspaces.qml"
+  },
+  "barWidget": {
+    "displayName": "My Workspaces",
+    "description": "Workspace number indicators",
+    "category": "Compositor",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.workspaces"
+  }
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+"""Switch the Grove compositor/bar/screensaver motion preference."""
+from pathlib import Path
+import json,subprocess,sys
+config=Path.home()/'.config/omarchy/shell.json'
+state=Path.home()/'.local/state/omarchy/bone-grove/reduced-motion'
+mode=sys.argv[1] if len(sys.argv)>1 else 'toggle'
+if mode not in ('toggle','reduced','full'):raise SystemExit('Usage: bone-grove-motion [toggle|reduced|full]')
+reduced=not state.exists() if mode=='toggle' else mode=='reduced'
+state.parent.mkdir(parents=True,exist_ok=True)
+if reduced:state.touch()
+else:state.unlink(missing_ok=True)
+s=json.loads(config.read_text());s.setdefault('bar',{})['reduceMotion']=reduced
+f=config.with_suffix('.grove-tmp');f.write_text(json.dumps(s,indent=2)+'\n');f.replace(config)
+subprocess.run(['hyprctl','reload'],check=True,stdout=subprocess.DEVNULL)
+print('Grove motion: '+('reduced' if reduced else 'full'))

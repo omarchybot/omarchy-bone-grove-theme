@@ -1,0 +1,47 @@
+{
+  "position": "top",
+  "transparent": false,
+  "layout": {
+    "left": [
+      {
+        "id": "bone-grove.brand"
+      },
+      {
+        "id": "bone-grove.workspaces"
+      }
+    ],
+    "center": [
+      {
+        "id": "omarchy.clock",
+        "format": "ddd d MMM h:mm AP",
+        "formatAlt": "dddd, d MMMM yyyy",
+        "verticalFormat": "HH\nmm"
+      }
+    ],
+    "right": [
+      {
+        "id": "omarchy.indicators"
+      },
+      {
+        "id": "omarchy.tray"
+      },
+      {
+        "id": "omarchy.network"
+      },
+      {
+        "id": "omarchy.bluetooth"
+      },
+      {
+        "id": "omarchy.audio"
+      },
+      {
+        "id": "omarchy.monitor"
+      },
+      {
+        "id": "omarchy.power"
+      }
+    ]
+  },
+  "id": "bone-grove.bar",
+  "centerAnchor": ""
+}

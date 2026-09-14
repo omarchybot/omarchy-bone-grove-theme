@@ -1,0 +1,149 @@
+# Bone Grove surfaces for Omarchy Shell.
+
+[bar]
+background       = "#171C19"
+background-alpha = 0.94
+text             = "#E9E7DE"
+active           = "#D99289"
+scale-with-font  = true
+size-horizontal  = 30
+size-vertical    = 30
+
+[hyprland]
+active-border            = "#A3B4C0 #B4BCAE 35deg"
+active-border-foreground = "#BCD1B0 #E9E7DE 35deg"
+
+[controls]
+normal-color        = "#E9E7DE"
+normal-fill-alpha   = 0.025
+normal-border       = "#A1A89C"
+normal-border-width = 1
+normal-border-alpha = 0.16
+hover-cursor-color        = "#FAF7EE"
+hover-cursor-fill-alpha   = 0.075
+hover-cursor-border       = "#BCD1B0"
+hover-cursor-border-width = 1
+hover-cursor-border-alpha = 0.28
+focus-color        = "#FAF7EE"
+focus-fill-alpha   = 0.09
+focus-border       = "#A3B4C0"
+focus-border-width = 1
+focus-border-alpha = 0.52
+selected-color        = "#FAF7EE"
+selected-fill-alpha   = 0.16
+selected-border       = "#A3B4C0"
+selected-border-width = 1
+selected-border-alpha = 0.42
+pressed-fill-alpha   = 0.20
+selection-fill-alpha = 0.28
+
+[spacing]
+scale = 1.0
+scale-with-font = true
+control-gap       = 7
+control-padding-x = 10
+control-padding-y = 5
+control-height    = 28
+popup-row-height  = 29
+row-gap           = 7
+row-padding-x     = 12
+panel-gap         = 12
+panel-padding     = 20
+popup-padding     = 16
+
+[font]
+base-size = 12
+caption    = 10
+body-small = 11
+body       = 12
+subtitle   = 13
+title      = 14
+heading    = 16
+display    = 23
+display-large = 28
+
+[popups]
+background       = "#232B25"
+background-alpha = 0.88
+text             = "#E9E7DE"
+border           = "hyprland.active-border"
+border-alpha     = 0.38
+border-width     = 1
+
+[tooltip]
+background       = "#232B25"
+background-alpha = 0.96
+text             = "#E9E7DE"
+border           = "#A1A89C"
+border-alpha     = 0.24
+
+[notifications]
+background       = "#232B25"
+background-alpha = 0.90
+text             = "#E9E7DE"
+border           = "hyprland.active-border"
+border-alpha     = 0.42
+border-width     = 1
+countdown        = "#A3B4C0"
+
+[launcher]
+background                = "#232B25"
+background-alpha          = 0.97
+text                      = "#E9E7DE"
+border                    = "hyprland.active-border-foreground"
+border-alpha              = 0.38
+scrim                     = "#080C09"
+scrim-alpha               = 0.46
+selected-background       = "#A3B4C0"
+selected-background-alpha = 0.15
+selected-text             = "#FAF7EE"
+selected-border           = "#BCD1B0"
+selected-border-alpha     = 0.36
+
+[menu]
+background                = "#232B25"
+background-alpha          = 0.90
+text                      = "#E9E7DE"
+border                    = "hyprland.active-border-foreground"
+border-alpha              = 0.34
+scrim                     = "#080C09"
+scrim-alpha               = 0.44
+selected-background       = "#A3B4C0"
+selected-background-alpha = 0.14
+selected-text             = "#FAF7EE"
+selected-border           = "#BCD1B0"
+selected-border-alpha     = 0.32
+
+[polkit]
+background       = "#232B25"
+background-alpha = 0.94
+text             = "#E9E7DE"
+text-error       = "#D99289"
+border           = "hyprland.active-border"
+border-error     = "#D99289"
+border-alpha     = 0.48
+scrim            = "#080C09"
+scrim-alpha      = 0.60
+accent           = "#A3B4C0"
+
+[lock]
+background       = "#232B25"
+background-alpha = 0.96
+text             = "#E9E7DE"
+placeholder      = "#A1A89C"
+text-error       = "#D99289"
+border           = "#858D83"
+border-active    = "hyprland.active-border"
+border-error     = "#D99289"
+border-alpha     = 0.48
+selection        = "#A3B4C0"
+selection-alpha  = 0.38
+
+[image-picker]
+scrim                   = "#080C09"
+scrim-alpha             = 0.48
+text                    = "#E9E7DE"
+selected-border         = "#BCD1B0"
+selected-border-alpha   = 0.88
+unselected-border       = "#A1A89C"
+unselected-border-alpha = 0.20
