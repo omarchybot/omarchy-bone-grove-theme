@@ -1,30 +1,20 @@
 <p align="center"><img src="assets/grove-mark.svg" width="64" alt="Grove leaf mark"></p>
 
-![Bone Grove — a quiet desktop, with room to breathe](assets/banner.png)
+# Bone Grove · Emerald
 
-A dark Omarchy theme in forest, graphite and bone white. Calm contrast, satin surfaces, and motion that follows your attention.
+A quiet, dark Omarchy experience built around **Emerald Ronin in the Mist**: near-black stone, mist-gray text and restrained emerald highlights.
 
-![Bone Grove running on a real Omarchy desktop, with the optional Canopy bar, terminal and editor](preview.png)
+![Grove Emerald lock-screen preview running on Omarchy](preview.png)
 
-### Install the theme
+## Install
+
+For wallpaper, palette, shell surfaces and icons:
 
 ```bash
 omarchy theme install https://github.com/jonahchang207/omarchy-bone-grove-theme
 ```
 
-This installs the palette, wallpaper, shell surfaces and sage icons. Omarchy generates matching colors for supported terminals, editors and tools. The Canopy bar and custom motion shown above are part of the optional full experience below.
-
-### The full experience
-
-**Requires Omarchy 4 with Lua Hyprland and Quickshell. Tested on Omarchy 4.0.2-1.**
-
-- **Canopy:** three compact floating capsules; Grove mark, sliding workspace rail, central clock and everyday controls, including the monitor control.
-- **Motion:** gentle window scaling, shorter departures, smooth resizing, modest workspace travel, coordinated layer and popup fades.
-- **Forest clock:** bone-white time and date above slowly moving contour ribbons. Keyboard or mouse input dismisses it.
-- **One gesture to quiet it:** middle-click the Grove mark to toggle reduced motion.
-- **Native controls:** network, Bluetooth, audio, monitor, power and tray remain Omarchy widgets.
-
-Clone to a separate folder, read the installer, preview its changes, then install:
+For the complete experience, including the bar, screensaver, lock-screen styling and controls:
 
 ```bash
 git clone https://github.com/jonahchang207/omarchy-bone-grove-theme.git
@@ -33,74 +23,69 @@ python3 install.py --full --dry-run
 python3 install.py --full
 ```
 
-The installer writes only to your home directory. It backs up every path it replaces, including any existing Bone Grove theme, bar layout and screensaver commands. It preserves your idle/lock times and unrelated shell settings. It does not install system packages or change keybindings. A default Omarchy setup already supplies the required terminal and shell dependencies.
+Requires **Omarchy 4 with Lua Hyprland and Quickshell**, tested on 4.0.2-1. The full installer backs up replaced files, preserves idle times and unrelated plugins, and writes only within your home directory. Existing Grove size, opacity and motion preferences survive updates. It uses the installed Omarchy lock service's authentication code, with a customized view.
 
-The full installer creates a local, editable theme. Re-running it from your separate checkout is how to update the full experience. Omarchy's standard theme installer deliberately regenerates executable theme files, so installing colors alone cannot enable the custom Lua/QML experience automatically.
+## The experience
 
-### Everyday controls
+- **Canopy bar:** three small floating capsules, sliding workspace rail, clock and native monitor control. Disconnected Bluetooth collapses until you hover over the bar; icons retain their native descriptive tooltips.
+- **Grove Controls:** sound, brightness, Wi-Fi, Bluetooth and night light in one compact panel. Native connection and display panels remain a click away.
+- **Graphical screensaver:** crisp time and date in the artwork's open left side, a subtle emerald light cycle, and a short dismissal fade. Keyboard, click, scroll or mouse movement dismisses it.
+- **Matching lock screen:** the same artwork and clock placement, plus a minimal password field. Native PAM, fingerprint authentication, session locking and recovery stay in Omarchy's service.
+- **Motion:** coordinated window, workspace and layer transitions; shorter departures; interruptible popup fades. Quick, Balanced, Soft and Off presets.
+- **Appearance:** bar height from 24–40 px and opacity from 75–100%. Default: 30 px and 94%.
+
+## Everyday use
 
 | Action | Result |
-| :--- | :--- |
-| Click **GROVE** | Open the Omarchy menu |
-| Right-click **GROVE** | Preview the screensaver |
-| Middle-click **GROVE** | Toggle reduced motion |
-| Click a workspace | Switch to it |
-| Scroll over workspaces | Switch to the previous or next workspace |
-| Click the clock | Open native clock/calendar controls |
-| Click a system icon | Open its native panel |
-
-You can also search **Bone Grove Screensaver** in the app launcher, or run:
-
-```bash
-bone-grove-motion reduced
-bone-grove-motion full
-```
-
-![The native Grove screensaver](assets/screensaver.png)
-
-The full installer makes Grove the native screensaver: automatic idle activation, `omarchy launch screensaver`, and the direct screensaver command use our renderer. A small user-local CLI shim handles only those screensaver routes and delegates every other command to `/usr/bin/omarchy`. A backed-up Hyprland appearance include gives user-local commands priority when the compositor starts applications. Packaged Omarchy files are untouched.
-
-The screensaver respects your existing idle policy; the session lock remains managed by Omarchy. This is an ambient screensaver, not a replacement lock screen.
-
-### Restore your previous setup
-
-The installer prints a timestamped backup path. Pass that exact path to:
+| --- | --- |
+| Click GROVE | Omarchy menu |
+| Right-click GROVE | Screensaver preview |
+| Middle-click GROVE | Reduced-motion toggle |
+| Click the controls icon | Grove Controls |
+| Right-click the controls icon | Appearance settings |
+| Search “Grove Appearance” | Appearance settings |
+| Click the monitor icon | Native display controls |
+| Scroll over workspaces | Previous/next workspace |
 
 ```bash
-python3 install.py --restore /path/printed/by/the/installer
+bone-grove settings
+bone-grove set motion .65   # Quick; also 0, 1, 1.2
+bone-grove set size 30
+bone-grove set opacity .94
+bone-grove update
+bone-grove restore          # Restore the latest installer backup
 ```
 
-Restore replaces the installed files with their saved originals. Back up later edits you want to keep before restoring. Screensaver helpers and the Canopy bar persist when you switch color themes; restore the backup to remove the full experience.
+To restore a particular checkpoint:
 
-### Palette
+```bash
+python3 install.py --restore /path/to/backup
+```
 
-| Surface | Hex |
-| :--- | :--- |
-| Forest | `#171C19` |
-| Deep shadow | `#0C100E` |
-| Raised graphite | `#232B25` |
-| Selection | `#35483A` |
-| Sage | `#A8BEA0` |
-| Bone | `#E9E7DE` |
+Restore replaces the affected files with their saved originals, including the former theme and shell settings. Save any later edits you want to keep first.
 
-The wallpaper is original vector artwork rendered at 3840 × 2160; its source is included in `assets/`. No proprietary fonts or artwork are required.
+The native idle launch and `omarchy launch screensaver` use the graphical renderer. The screensaver retains Omarchy's application ID so idle tracking and the transition to locking continue to work. Stay Awake and the screensaver-disabled preference are respected. A screensaver is not a session lock. Always-on-top application windows may remain above the ambient screensaver; the secure session lock covers applications.
 
-### Scope and compatibility
+## Palette
 
-The full experience controls the desktop compositor, bar, shell surfaces and screensaver. Applications retain control of their internal scrolling and UI animations. GTK apps use their native dark appearance; apps with independent themes may need a separate appearance setting. Older Waybar/Hyprlang-based Omarchy installations can use compatible palette files but cannot run this Quickshell experience.
+| Surface | Color |
+| --- | --- |
+| Near black | `#060B08` |
+| Forest surface | `#0D1511` |
+| Raised surface | `#18271F` |
+| Selection | `#254336` |
+| Emerald | `#86C8A3` |
+| Mist | `#E1EBE4` |
 
-The bar retains Omarchy's vertical layout fallback; the authored composition is the compact top bar. The optional bar source is derived from Omarchy and may need updates when its shell API changes.
+## Scope and validation
 
-### Validation
+The experience styles the compositor, bar, shell, supported application themes, screensaver and lock view. Applications still control their internal scrolling and animation. The authored bar layout is horizontal; native vertical fallback remains available. Shell API changes may require updating custom plugins.
 
 ```bash
 python3 -m unittest discover -s tests -v
-omarchy plugin validate experience/plugins/bone-grove.bar
-omarchy plugin validate experience/plugins/bone-grove.workspaces
-omarchy plugin validate experience/plugins/bone-grove.brand
 hyprctl configerrors
 ```
 
-Installer dry-run and backup/restore tests are included. Live validation covered the top-bar layout and Hyprland configuration. Screensaver checks covered animated frames, small terminals, keyboard dismissal and terminal restoration.
+Checks cover installation, dry-run, exact backup restoration, preference validation and preserving unrelated settings. Live checks covered graphical rendering/dismissal, control and appearance panels, and a lock-screen **preview**. The authentication service remains unmodified; no authentication test is claimed.
 
-MIT licensed. See [NOTICE.md](NOTICE.md) for attribution. Apple-inspired visual direction, with no Apple or Omarchy affiliation implied.
+Code is MIT licensed. See [NOTICE.md](NOTICE.md) for artwork and upstream attribution. No Apple or Omarchy affiliation is implied.

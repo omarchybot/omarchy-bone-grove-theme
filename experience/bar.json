@@ -38,10 +38,15 @@
         "id": "omarchy.monitor"
       },
       {
+        "id": "bone-grove.control"
+      },
+      {
         "id": "omarchy.power"
       }
     ]
   },
   "id": "bone-grove.bar",
-  "centerAnchor": ""
+  "centerAnchor": "",
+  "groveSize": 30,
+  "groveOpacity": 0.94
 }

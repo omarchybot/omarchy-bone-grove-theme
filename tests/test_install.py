@@ -18,7 +18,7 @@ class Installation(unittest.TestCase):
             old_theme=cfg/'themes/bone-grove';old_theme.mkdir(parents=True);(old_theme/'keep.txt').write_text('previous theme')
             self.run_installer(home,'--full','--no-apply')
             actual=json.loads((cfg/'shell.json').read_text())
-            self.assertEqual(actual['idle'],original['idle']);self.assertEqual(actual['plugins'],original['plugins'])
+            self.assertEqual(actual['idle'],original['idle']);self.assertIn('example.plugin',actual['plugins']);self.assertIn({'id':'bone-grove.lock'},actual['plugins'])
             self.assertEqual(actual['bar']['id'],'bone-grove.bar')
             self.assertIn('require("hypr.bone-grove-session")',(hypr/'looknfeel.lua').read_text())
             self.assertTrue((home/'.local/bin/omarchy').exists())

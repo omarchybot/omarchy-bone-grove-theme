@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+"""Bone Grove controls and reversible appearance settings."""
+import argparse,json,os,subprocess,sys,tempfile
+from pathlib import Path
+HOME=Path.home(); CONFIG=HOME/'.config/omarchy/shell.json'; STATE=HOME/'.local/state/omarchy/bone-grove'
+DEFAULTS={'groveSize':30,'groveOpacity':.94,'groveMotion':1.0,'reduceMotion':False}
+def run(*args):
+ return subprocess.run(args,text=True,capture_output=True,timeout=20,check=True).stdout.strip()
+def optional(*args):
+ try:return run(*args)
+ except (OSError,subprocess.SubprocessError):return None
+def atomic(path,text):
+ path.parent.mkdir(parents=True,exist_ok=True)
+ fd,name=tempfile.mkstemp(dir=path.parent,prefix='.'+path.name)
+ try:
+  with os.fdopen(fd,'w') as f:f.write(text)
+  os.replace(name,path)
+ finally:
+  if os.path.exists(name):os.unlink(name)
+def preferences():
+ bar=json.loads(CONFIG.read_text()).get('bar',{}) if CONFIG.exists() else {}
+ return {k:bar.get(k,v) for k,v in DEFAULTS.items()}
+def setting(key,value):
+ if key=='size': field='groveSize'; value=int(value); valid=24<=value<=40
+ elif key=='opacity':field='groveOpacity';value=float(value);valid=.75<=value<=1
+ elif key=='motion':field='groveMotion';value=float(value);valid=value in (0,.65,1,1.2)
+ else:raise ValueError('Unknown appearance setting')
+ if not valid:raise ValueError('Setting outside supported range')
+ shell=json.loads(CONFIG.read_text());shell.setdefault('bar',{})[field]=value
+ if key=='motion':
+  shell['bar']['reduceMotion']=value==0;STATE.mkdir(parents=True,exist_ok=True)
+  if value==0:(STATE/'reduced-motion').touch()
+  else:(STATE/'reduced-motion').unlink(missing_ok=True)
+  atomic(STATE/'motion-strength',str(value if value else 1))
+ atomic(CONFIG,json.dumps(shell,indent=2)+'\n')
+ if key=='motion':run('hyprctl','reload')
+ return preferences()
+def status():
+ s=preferences();v=optional('wpctl','get-volume','@DEFAULT_AUDIO_SINK@')
+ s['volume']=round(float(v.split()[1])*100) if v else None;s['muted']=bool(v and 'MUTED' in v)
+ b=optional('omarchy','brightness','display','--no-osd');s['brightness']=int(b) if b and b.isdigit() else None
+ s['wifi']=optional('nmcli','radio','wifi')=='enabled'
+ bt=optional('bluetoothctl','show');s['bluetooth']=bool(bt and 'Powered: yes' in bt)
+ connected=optional('bluetoothctl','devices','Connected');s['bluetoothConnected']=bool(connected)
+ night=optional('omarchy','toggle','nightlight','--status')
+ s['nightlight']=bool(json.loads(night).get('enabled')) if night else False
+ return s
+def main():
+ ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('action',choices=['status','set','toggle','settings','update','restore']);ap.add_argument('key',nargs='?');ap.add_argument('value',nargs='?');a=ap.parse_args()
+ if a.action=='status':result=status()
+ elif a.action=='settings':result=run('omarchy-shell','bone-grove.control','showSettings')
+ elif a.action=='set':
+  if a.key in ('size','opacity','motion'):result=setting(a.key,a.value)
+  elif a.key in ('volume','brightness'):
+   v=int(a.value)
+   if not 0<=v<=100:raise ValueError('Use a percentage from 0 to 100')
+   result=run('wpctl','set-volume','@DEFAULT_AUDIO_SINK@',str(v/100)) if a.key=='volume' else run('omarchy','brightness','display','--no-osd',str(v)+'%')
+  else:raise ValueError('Unknown control')
+ elif a.action=='toggle':
+  if a.key=='mute':result=run('wpctl','set-mute','@DEFAULT_AUDIO_SINK@','toggle')
+  elif a.key=='wifi':result=run('nmcli','radio','wifi','off' if run('nmcli','radio','wifi')=='enabled' else 'on')
+  elif a.key=='bluetooth':result=run('bluetoothctl','power','off' if 'Powered: yes' in run('bluetoothctl','show') else 'on')
+  elif a.key=='nightlight':result=run('omarchy','toggle','nightlight')
+  else:raise ValueError('Unknown toggle')
+ elif a.action in ('update','restore'):
+  source=HOME/'.local/share/bone-grove/source'
+  if a.action=='update':
+   if source.exists():subprocess.run(['git','-C',str(source),'pull','--ff-only'],check=True)
+   else:
+    source.parent.mkdir(parents=True,exist_ok=True)
+    subprocess.run(['git','clone','https://github.com/jonahchang207/omarchy-bone-grove-theme',str(source)],check=True)
+   subprocess.run([sys.executable,str(source/'install.py'),'--full'],check=True)
+  else:
+   backups=sorted((HOME/'.config/omarchy/backups').glob('bone-grove-*/manifest.json'))
+   if not backups:raise ValueError('No Bone Grove backup found')
+   backup=Path(a.key).expanduser() if a.key else backups[-1].parent
+   installer=HOME/'.local/share/bone-grove/install.py'
+   subprocess.run([sys.executable,str(installer),'--restore',str(backup)],check=True)
+  result={'ok':True}
+ print(json.dumps(result))
+if __name__=='__main__':
+ try:main()
+ except (ValueError,OSError,subprocess.SubprocessError) as e:
+  print(json.dumps({'error':str(e)}));sys.exit(1)

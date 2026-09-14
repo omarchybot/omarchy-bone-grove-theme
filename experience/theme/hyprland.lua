@@ -1,6 +1,6 @@
 -- Bone Grove: visual-only overrides layered after Omarchy defaults.
-local active_border_color = { colors = { "rgba(789775ee)", "rgba(b4bcaecc)" }, angle = 35 }
-local inactive_border_color = "rgba(65706055)"
+local active_border_color = { colors = { "rgba(5fad83ee)", "rgba(a1c8b2cc)" }, angle = 35 }
+local inactive_border_color = "rgba(41665355)"
 
 hl.config({
   general = {
@@ -59,8 +59,12 @@ hl.config({ animations = { enabled = not reduce } })
 hl.curve("groveArrive", { type = "bezier", points = { { 0.16, 1.00 }, { 0.30, 1.00 } } })
 hl.curve("groveTravel", { type = "bezier", points = { { 0.22, 0.75 }, { 0.20, 1.00 } } })
 hl.curve("groveLeave", { type = "bezier", points = { { 0.40, 0.00 }, { 0.80, 0.45 } } })
+local strengthFile = io.open(os.getenv("HOME") .. "/.local/state/omarchy/bone-grove/motion-strength", "r")
+local strength = 1
+if strengthFile then strength = tonumber(strengthFile:read("*a")) or 1; strengthFile:close() end
+strength = math.max(0.5, math.min(1.25, strength))
 local function motion(leaf, speed, curve, style)
-  local rule = { leaf = leaf, enabled = not reduce, speed = speed, bezier = curve }
+  local rule = { leaf = leaf, enabled = not reduce, speed = speed * strength, bezier = curve }
   if style then rule.style = style end
   hl.animation(rule)
 end

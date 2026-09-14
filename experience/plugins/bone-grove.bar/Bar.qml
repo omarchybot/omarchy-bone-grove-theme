@@ -46,6 +46,8 @@ Item {
   property bool useTransparentForeground: false
   property bool transparent: false
   property bool centerSectionHovered: false
+  property var groveStatus: ({})
+  function motionMs(ms) { return reducedMotion ? 0 : Math.round(ms * (barConfig.groveMotion || 1)) }
   // One bar surface exists per monitor and each reports into this count, so a
   // pointer crossing from one monitor's bar to another's stays counted however
   // the enter and leave interleave. A single shared bool would be left false by
@@ -69,12 +71,12 @@ Item {
   property color foreground: themeForeground
   property color barForeground: useTransparentForeground ? transparentForeground : themeForeground
   property bool foregroundAnimationEnabled: true
-  property color background: Color.bar.background
+  property color background: Qt.rgba(Color.bar.background.r, Color.bar.background.g, Color.bar.background.b, barConfig.groveOpacity === undefined ? 0.94 : barConfig.groveOpacity)
   property color urgent: Color.bar.active
 
-  Behavior on barForeground { enabled: root.foregroundAnimationEnabled; ColorAnimation { duration: 420; easing.type: Easing.InOutCubic } }
-  Behavior on background { ColorAnimation { duration: 420; easing.type: Easing.InOutCubic } }
-  Behavior on urgent { ColorAnimation { duration: 420; easing.type: Easing.InOutCubic } }
+  Behavior on barForeground { enabled: root.foregroundAnimationEnabled; ColorAnimation { duration: root.motionMs(420); easing.type: Easing.InOutCubic } }
+  Behavior on background { ColorAnimation { duration: root.motionMs(420); easing.type: Easing.InOutCubic } }
+  Behavior on urgent { ColorAnimation { duration: root.motionMs(420); easing.type: Easing.InOutCubic } }
   property var tooltipTarget: null
   property var pendingTooltipTarget: null
   property string tooltipText: ""
@@ -328,7 +330,7 @@ Item {
   }
 
   readonly property bool vertical: position === "left" || position === "right"
-  readonly property int barSize: vertical ? Style.bar.sizeVertical : Style.bar.sizeHorizontal
+  readonly property int barSize: Math.max(24, Math.min(40, barConfig.groveSize || 30))
 
   function normalizePosition(value) {
     return BarModel.normalizePosition(value)
@@ -1281,7 +1283,7 @@ Item {
         opacity: root.barMoveCandidate === modelData ? (root.transparent ? 0.45 : 0.7) : 0
 
         Behavior on opacity {
-          NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+          NumberAnimation { duration: root.motionMs(140); easing.type: Easing.OutCubic }
         }
       }
     }
@@ -1607,7 +1609,13 @@ Item {
       if (hint !== undefined && hint !== null && hint > 0) return Math.round(hint)
       return Math.max(Style.space(10), Math.round((root.vertical ? slot.height : slot.width) * 0.55))
     }
-    implicitWidth: activeItem && activeItem.visible ? (root.vertical ? root.barSize : activeItem.implicitWidth) : 0
+    readonly property bool dormant: moduleName === "omarchy.bluetooth" && root.groveStatus.bluetoothConnected === false
+    readonly property bool collapsed: dormant && !root.barHovered && !panelOpen
+    clip: collapsed
+    opacity: collapsed ? 0 : 1
+    Behavior on opacity { NumberAnimation { duration: root.reducedMotion ? 0 : 140; easing.type: Easing.OutCubic } }
+    Behavior on implicitWidth { NumberAnimation { duration: root.reducedMotion ? 0 : 180; easing.type: Easing.OutCubic } }
+    implicitWidth: collapsed ? 0 : (activeItem && activeItem.visible ? (root.vertical ? root.barSize : Math.max(30, activeItem.implicitWidth)) : 0)
     implicitHeight: activeItem && activeItem.visible ? activeItem.implicitHeight : 0
     width: implicitWidth
     height: implicitHeight

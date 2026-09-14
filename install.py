@@ -42,12 +42,12 @@ def main():
     plan = ['.config/omarchy/themes/bone-grove', '.config/omarchy/shell.json', '.config/hypr/looknfeel.lua', '.config/hypr/bone-grove-session.lua']
     plan += ['.config/omarchy/plugins/'+p.name for p in sorted((ROOT/'experience/plugins').iterdir()) if p.is_dir()]
     plan += ['.local/bin/'+p.name for p in sorted((ROOT/'experience/bin').iterdir()) if p.is_file()]
-    plan += ['.local/share/applications/bone-grove-screensaver.desktop']
+    plan += ['.local/share/applications/bone-grove-screensaver.desktop', '.config/omarchy/screensaver/org.omarchy.screensaver', '.local/share/bone-grove/install.py', '.local/share/applications/bone-grove-settings.desktop']
     for rel in plan: print('Install:', home/rel)
     if args.dry_run: return
     if not args.no_apply:
         if not Path('/usr/share/omarchy/default/hypr/bootstrap.lua').exists(): raise SystemExit('The full experience requires Omarchy 4 with Lua Hyprland and Quickshell.')
-        for command in ('omarchy','hyprctl','python3'):
+        for command in ('omarchy','hyprctl','python3','qs'):
             if not shutil.which(command): raise SystemExit('Missing required command: '+command)
     shell_path = home/'.config/omarchy/shell.json'
     # Parse before changing anything. Preserve idle policy and unrelated settings.
@@ -70,11 +70,32 @@ def main():
         theme=staging/'.config/omarchy/themes/bone-grove';theme.mkdir(parents=True)
         for name in ('colors.toml','shell.toml','icons.theme','backgrounds'): copy(ROOT/name,theme/name)
         for src in (ROOT/'experience/theme').iterdir(): copy(src,theme/src.name)
+        oldbar=shell.get('bar',{})
         shell['bar']=json.loads((ROOT/'experience/bar.json').read_text())
+        for key in ('groveSize','groveOpacity','groveMotion','reduceMotion'):
+            if key in oldbar:shell['bar'][key]=oldbar[key]
+        # Replace only the native lock service; preserve unrelated plugins.
+        plugins=shell.setdefault('plugins',[])
+        def plugin_id(p):return p if isinstance(p,str) else p.get('id','')
+        lock_ids={'omarchy.lock','bone-grove.lock'}
+        for existing in (home/'.config/omarchy/plugins').glob('*/manifest.json'):
+            info=json.loads(existing.read_text())
+            if info.get('omarchy',{}).get('clonedFrom')=='omarchy.lock':lock_ids.add(info['id'])
+        plugins[:]=[p for p in plugins if plugin_id(p) not in lock_ids]
+        plugins.append({'id':'bone-grove.lock'})
+        disabled=shell.setdefault('disabledPlugins',[])
+        for name in sorted(lock_ids - {'bone-grove.lock'}):
+            if name not in disabled:disabled.append(name)
+        if 'bone-grove.lock' in disabled:disabled.remove('bone-grove.lock')
+        copy(ROOT/'experience/screensaver/org.omarchy.screensaver',staging/'.config/omarchy/screensaver/org.omarchy.screensaver')
+        copy(ROOT/'install.py',staging/'.local/share/bone-grove/install.py')
         shell['bar']['reduceMotion']=(home/'.local/state/omarchy/bone-grove/reduced-motion').exists()
         (staging/'.config/omarchy/shell.json').write_text(json.dumps(shell,indent=2)+'\n')
         for src in (ROOT/'experience/plugins').iterdir():
             if src.is_dir(): copy(src,staging/'.config/omarchy/plugins'/src.name)
+        # Authentication always comes from the currently installed Omarchy package.
+        native_service=Path('/usr/share/omarchy/shell/plugins/lock/Service.qml')
+        if native_service.exists():shutil.copy2(native_service,staging/'.config/omarchy/plugins/bone-grove.lock/Service.qml')
         for src in (ROOT/'experience/bin').iterdir():
             if src.is_file():
                 dst=staging/'.local/bin'/src.name;copy(src,dst);dst.chmod(0o755)
@@ -82,6 +103,9 @@ def main():
         # Desktop Exec is not shell syntax; escape its quoted executable path.
         executable=str(home/'.local/bin/omarchy-launch-screensaver').replace('\\','\\\\').replace('"','\\"').replace('`','\\`').replace('$','\\$').replace('%','%%')
         desktop.write_text('[Desktop Entry]\nType=Application\nName=Bone Grove Screensaver\nComment=Preview the forest clock\nExec="'+executable+'" force\nIcon=preferences-desktop-screensaver\nTerminal=false\nCategories=Utility;\n')
+        settings_desktop=staging/'.local/share/applications/bone-grove-settings.desktop'
+        settings_executable=str(home/'.local/bin/bone-grove').replace('\\','\\\\').replace('"','\\"').replace('`','\\`').replace('$','\\$').replace('%','%%')
+        settings_desktop.write_text('[Desktop Entry]\nType=Application\nName=Grove Appearance\nComment=Emerald desktop settings\nExec="'+settings_executable+'" settings\nIcon=preferences-desktop-theme\nTerminal=false\nCategories=Settings;\n')
         for rel in plan:
             dst=home/rel;exists=dst.exists() or dst.is_symlink()
             if exists: copy(dst,backup/'files'/rel)
